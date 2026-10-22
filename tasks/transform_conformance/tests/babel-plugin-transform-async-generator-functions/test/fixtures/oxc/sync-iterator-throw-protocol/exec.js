@@ -1,11 +1,10 @@
-import asyncIterator from "@oxc-project/runtime/helpers/asyncIterator";
 import { createRequire } from "node:module";
 import { pathToFileURL } from "node:url";
 
 return (async () => {
-  const helperPath = createRequire(import.meta.url).resolve(
-    "@oxc-project/runtime/helpers/asyncIterator",
-  );
+  const require = createRequire(import.meta.url);
+  const helperPath = require.resolve("@oxc-project/runtime/helpers/asyncIterator");
+  const asyncIterator = require(helperPath);
   const esm = await import(new URL("./esm/asyncIterator.js", pathToFileURL(helperPath)));
   for (const wrap of [asyncIterator, esm.default]) {
     const originalError = new Error("original");
