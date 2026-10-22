@@ -16,6 +16,21 @@ return (async () => {
         },
       });
 
+    for (const done of [undefined, null, 0, "", 1, "done", {}]) {
+      const inner = {
+        next() {},
+        throw(error) {
+          expect(this).toBe(inner);
+          expect(error).toBe(originalError);
+          return { value: Promise.resolve(1), done };
+        },
+      };
+      await expect(wrapped(inner).throw(originalError)).resolves.toEqual({
+        value: 1,
+        done: !!done,
+      });
+    }
+
     // A missing throw method closes the iterator with no argument, then rejects TypeError.
     for (const missing of [undefined, null]) {
       let calls = 0;
