@@ -83,6 +83,9 @@ impl<'a, C: Config> ParserImpl<'a, C> {
         // allow `await` and `yield`, let semantic analysis report error
         let kind = self.cur_kind();
         if !kind.is_identifier_reference(false, false) {
+            if self.cur_token().escaped() && matches!(kind, Kind::In | Kind::Instanceof) {
+                return self.fatal_error(diagnostics::escaped_keyword(self.cur_token().span()));
+            }
             return self.unexpected();
         }
         // Track await identifier for potential reparsing in unambiguous mode
