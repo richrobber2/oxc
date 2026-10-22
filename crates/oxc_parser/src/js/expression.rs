@@ -1352,7 +1352,10 @@ impl<'a, C: Config> ParserImpl<'a, C> {
 
             // Escaped keywords are identifier names, not binary operators. After a newline,
             // they can start the next class field instead of continuing its initializer.
-            if matches!(kind, Kind::In | Kind::Instanceof) && self.cur_token().escaped() {
+            if matches!(kind, Kind::In | Kind::Instanceof)
+                && self.cur_token().escaped()
+                && self.cur_token().is_on_new_line()
+            {
                 break;
             }
 
