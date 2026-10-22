@@ -1,3 +1,5 @@
 formatter_misc Summary:
-AST Parsed     : 114/114 (100.00%)
-Positive Passed: 114/114 (100.00%)
+AST Parsed     : 115/115 (100.00%)
+Positive Passed: 114/115 (99.13%)
+Expect to Parse: tasks/coverage/misc/pass/escaped-class-field-operators.js
+Cannot assign to this expression
