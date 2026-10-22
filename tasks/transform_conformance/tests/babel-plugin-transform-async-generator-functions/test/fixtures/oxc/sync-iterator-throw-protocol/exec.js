@@ -31,6 +31,36 @@ return (async () => {
       });
     }
 
+    for (const poison of [
+      { value: null },
+      {
+        get() {
+          throw abrupt;
+        },
+      },
+    ]) {
+      const inner = { next() {} };
+      inner.throw = function (error) {
+        expect(this).toBe(inner);
+        expect(error).toBe(originalError);
+        return { value: 1, done: true };
+      };
+      Object.defineProperty(inner.throw, "call", poison);
+      await expect(wrapped(inner).throw(originalError)).resolves.toEqual({ value: 1, done: true });
+
+      delete inner.throw;
+      let closed = false;
+      inner.return = function () {
+        expect(this).toBe(inner);
+        expect(arguments.length).toBe(0);
+        closed = true;
+        return {};
+      };
+      Object.defineProperty(inner.return, "call", poison);
+      await expect(wrapped(inner).throw(originalError)).rejects.toBeInstanceOf(TypeError);
+      expect(closed).toBe(true);
+    }
+
     // A missing throw method closes the iterator with no argument, then rejects TypeError.
     for (const missing of [undefined, null]) {
       let calls = 0;

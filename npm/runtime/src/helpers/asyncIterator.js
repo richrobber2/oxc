@@ -42,12 +42,12 @@ function AsyncFromSyncIterator(r) {
         if (null == n) {
           var t = this.s["return"];
           if (null != t) {
-            var o = t.call(this.s);
+            var o = Function.prototype.call.call(t, this.s);
             if (Object(o) !== o) throw new TypeError("Iterator return result is not an object.");
           }
           return Promise.reject(new TypeError("The iterator does not provide a 'throw' method."));
         }
-        return AsyncFromSyncIteratorContinuation(n.call(this.s, r));
+        return AsyncFromSyncIteratorContinuation(Function.prototype.call.call(n, this.s, r));
       } catch (r) {
         return Promise.reject(r);
       }
